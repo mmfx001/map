@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.popup-bottom {
+  background-color: white; /* Set a white background for the popup */
+  border-radius: 8px; /* Round the corners */
+}
+
+.popup-content img {
+  max-width: 90%; /* Ensure images fit within the popup */
+  height: auto; /* Maintain aspect ratio */
+}

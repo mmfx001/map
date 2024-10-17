@@ -55,39 +55,34 @@ const categoryFilters = {
     { label: 'Tuman', type: 'select', optionsKey: 'tuman' },
     { label: 'Sotix', type: 'number', key: 'sotix' },
     { label: 'Xona', type: 'number', key: 'xona' },
-    { label: 'Narxi', type: 'number', key: 'narxi' },
-
   ],
   Kvartira: [
     { label: 'Tuman', type: 'select', optionsKey: 'tuman' },
     { label: 'Kvadratura (kv)', type: 'number', key: 'kvadratura' },
     { label: 'Xona', type: 'number', key: 'xona' },
     { label: 'Qavat', type: 'number', key: 'qavat' },
-    { label: 'Narxi', type: 'number', key: 'narxi' },
+    { label: 'Bino Qavat', type: 'number', key: 'bino_qavat' },
   ],
   Noturarjoy: [
     { label: 'Tuman', type: 'select', optionsKey: 'tuman' },
     { label: 'Kvadratura (kv)', type: 'number', key: 'kvadratura' },
     { label: 'Xona', type: 'number', key: 'xona' },
     { label: 'Qavat', type: 'number', key: 'qavat' },
-    { label: 'Narxi', type: 'number', key: 'narxi' },
-
+    { label: 'Bino Qavat', type: 'number', key: 'bino_qavat' },
   ],
   Penhouse: [
     { label: 'Tuman', type: 'select', optionsKey: 'tuman' },
     { label: 'Kvadratura (kv)', type: 'number', key: 'kvadratura' },
     { label: 'Xona', type: 'number', key: 'xona' },
     { label: 'Qavat', type: 'number', key: 'qavat' },
-    { label: 'Narxi', type: 'number', key: 'narxi' },
-
+    { label: 'Bino Qavat', type: 'number', key: 'bino_qavat' },
   ],
   Navastroyka: [
     { label: 'Tuman', type: 'select', optionsKey: 'tuman' },
     { label: 'Kvadratura (kv)', type: 'number', key: 'kvadratura' },
     { label: 'Xona', type: 'number', key: 'xona' },
     { label: 'Qavat', type: 'number', key: 'qavat' },
-    { label: 'Narxi', type: 'number', key: 'narxi' },
-
+    { label: 'Bino Qavat', type: 'number', key: 'bino_qavat' },
   ],
 };
 
@@ -104,7 +99,6 @@ const MapComponent = () => {
   const [isListDrawerOpen, setIsListDrawerOpen] = useState(false); // List drawer
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
-  const [photo, setphoto] = useState('');
   const [filters, setFilters] = useState({});
 
   // Hududlar ro'yxati
@@ -112,6 +106,7 @@ const MapComponent = () => {
 
   // Kategoriyalar ro'yxati
   const categories = Object.keys(categoryFilters);
+
   const center = [41.311081, 69.240562];
 
   useEffect(() => {
@@ -146,7 +141,6 @@ const MapComponent = () => {
     fetchLocations();
   }, []);
 
-
   const calculatePercentageCount = (totalCount, percentage) => {
     return Math.ceil((totalCount * percentage) / 100);
   };
@@ -155,6 +149,7 @@ const MapComponent = () => {
     // Nusxa olish orqali original massivni o'zgartirmaslik
     return [...locationsToSort].sort((a, b) => parseFloat(b.narxi) - parseFloat(a.narxi));
   };
+
   const applyFilters = () => {
     let filtered = [...locations];
 
@@ -185,7 +180,7 @@ const MapComponent = () => {
               break;
             case 'select':
               if (filters[filter.label]) {
-                filtered = filtered.filter(location => location.tuman === filters[filter.label]);
+                filtered = filtered.filter(location => location[filter.key || 'category'] === filters[filter.label]);
               }
               break;
             default:
@@ -198,7 +193,6 @@ const MapComponent = () => {
     setFilteredLocations(filtered);
     setIsFilterModalOpen(false);
   };
-
 
   const resetFilters = () => {
     setSelectedCategory('');
@@ -283,7 +277,7 @@ const MapComponent = () => {
               justify-content: center; /* Center horizontally */
               position: relative; /* For pseudo-element positioning */
             ">
-              <span>${location.narxi} </span>
+              <span>${location.narxi} so'm</span>
             </div>
           `,
           iconSize: [100, 40], // Adjusted icon size
@@ -315,7 +309,6 @@ const MapComponent = () => {
         zoomControl={false}
         scrollWheelZoom={true}
       >
-        
         <ZoomControl position="topright" />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -345,8 +338,8 @@ const MapComponent = () => {
       {isFilterModalOpen && (
         <div
           className={`fixed 
-            ${window.innerWidth <= 500 ? 'bottom-0 left-0 w-full h-[65vh] py-2' : 'right-0 top-0 w-[32%] h-full '}
-            bg-white shadow-lg z-50 p-7 overflow-auto transition-transform 
+            ${window.innerWidth <= 500 ? 'bottom-0 left-0 w-full h-[65vh] py-2' : 'right-0 top-0 w-[32%] h-full'}
+            bg-white shadow-lg z-50 p-7 overflow-auto transition-transform duration-300
           `}
         >
           <button
@@ -462,7 +455,7 @@ const MapComponent = () => {
                 <div className="mt-2">
                   <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1} className="mb-4">
                     {/* Display images from current location */}
-                    {Array.from({ length: 8 }, (_, idx) => (
+                    {Array.from({ length: 5 }, (_, idx) => (
                       location[`photo${idx + 1}`] && (
                         <div key={idx}>
                           <img
@@ -475,22 +468,10 @@ const MapComponent = () => {
                     ))}
                   </Slider>
                 </div>
-      
-
-                <h3 className="text-lg font-bold mt-6">«{location.joylashuv}»</h3>
-                <p className="text-sm text-gray-700">Tuman: {location.tuman}</p>
+                <h3 className="text-xl font-semibold mt-4">{location.joylashuv}</h3>
+                <p className="text-sm text-gray-600">Hudud: {location.tuman}</p>
                 <p className="text-md font-semibold text-green-600">Narxi: {location.narxi} so'm</p>
-                <p className="text-sm text-gray-700">Kategoriya: {location.category}</p>
-                <p className="text-sm text-gray-700 mt-2">{location.description}</p>
-                <div className="mt-4">
-                  <h4 className="font-semibold">Aloqa:</h4>
-                  <ul>
-                    {location.phones && location.phones.map((phone, idx) => (
-                      <li key={idx} className="text-sm text-gray-600">{phone}</li>
-                    ))}
-                  </ul>
-                <button className='text-lg text-white mt-2 bg-green-500 shadow-lg hover:bg-green-600 px-6 py-1 rounded-md flex items-center justify-center' onClick={() => { setSelectedLocation(location); setDrawerOpen(true); }}>Details</button>
-                </div>
+                <p className="text-sm text-gray-600">Kategoriya: {location.category}</p>
               </li>
             ))}
           </ul>
@@ -511,10 +492,9 @@ const MapComponent = () => {
           >
             &times;
           </button>
-          <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1} className="mb-4 ">
+          <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1} className="mb-4">
             {/* Display images from selected location */}
-
-            {Array.from({ length: 8 }, (_, idx) => (
+            {Array.from({ length: 5 }, (_, idx) => (
               selectedLocation[`photo${idx + 1}`] && (
                 <div key={idx}>
                   <img
@@ -528,7 +508,7 @@ const MapComponent = () => {
           </Slider>
           <div>
             <h3 className="text-lg font-bold mt-6">«{selectedLocation.joylashuv}»</h3>
-            <p className="text-sm text-gray-700">Tuman: {selectedLocation.tuman}</p>
+            <p className="text-sm text-gray-700">Hudud: {selectedLocation.tuman}</p>
             <p className="text-md font-semibold text-green-600">Narxi: {selectedLocation.narxi} so'm</p>
             <p className="text-sm text-gray-700">Kategoriya: {selectedLocation.category}</p>
             <p className="text-sm text-gray-700 mt-2">{selectedLocation.description}</p>
@@ -539,8 +519,6 @@ const MapComponent = () => {
                   <li key={idx} className="text-sm text-gray-600">{phone}</li>
                 ))}
               </ul>
-         
-             
             </div>
           </div>
         </div>
