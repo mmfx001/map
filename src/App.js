@@ -297,10 +297,14 @@ const MapComponent = () => {
       />
     ));
   }, [filteredLocations]);
-
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-16 h-16 border-4 border-orange-500 border-dashed rounded-full animate-spin"></div>
+      </div>
+    );
   }
+
 
   if (error) {
     return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
@@ -310,35 +314,41 @@ const MapComponent = () => {
     <div className="relative w-full h-screen">
       <MapContainer
         center={center}
-        zoom={16}
-        className='w-full h-full z-0' // Ensure map fills the container
+        zoom={12}
+        style={{
+          width: '100%',
+          height: '100vh',
+          position: 'relative', // Position ni relative qilib, butun ekran bo‘yicha joylashuvi
+          zIndex: 0, // Xarita boshqa elementlar ostida joylashishi uchun
+        }}
         zoomControl={false}
         scrollWheelZoom={true}
       >
-        
         <ZoomControl position="topright" />
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&v=21.08.12-0&x={x}&y={y}&z={z}&lang=ru_RU"
+          attribution='&copy; <a href="https://yandex.ru/maps">Yandex.Maps</a>'
         />
         <ZoomChecker />
         {markers}
       </MapContainer>
 
+
+
       {/* Ro'yxat (List) Drawer Trigger Button */}
       <button
         onClick={() => setIsListDrawerOpen(true)}
-        className="bg-green-600 text-white px-7 py-2 rounded-lg shadow-md hover:bg-green-700 h-[6vh] absolute bottom-4 left-4 z-50"
+        className="bg-green-600 text-white px-7 py-2 flex items-center justify-center rounded-lg shadow-md hover:bg-green-700 h-[6vh] absolute bottom-4 left-4 z-50"
       >
-        Ro'yxat
+        <img className='w-8' src="https://static.vecteezy.com/system/resources/thumbnails/014/441/438/small_2x/list-icon-3d-design-for-application-and-website-presentation-png.png" alt="none" />
       </button>
 
       {/* Sozlash (Filter) Drawer Trigger Button */}
       <button
         onClick={() => setIsFilterModalOpen(true)}
-        className="bg-blue-600 text-white px-7 py-2 rounded-lg shadow-md hover:bg-blue-700 h-[6vh] absolute bottom-4 right-4 z-50"
+        className="bg-blue-500 text-white px-8 py-2 rounded-lg flex items-center justify-center shadow-md hover:bg-blue-600 h-[6vh] absolute bottom-4 right-4 z-50"
       >
-        Sozlash
+        <img className='w-6' src="https://www.flexconind.com/wp-content/uploads/2021/07/filter-icon.png" alt="none" />
       </button>
 
       {/* Filter Modal */}
@@ -475,7 +485,7 @@ const MapComponent = () => {
                     ))}
                   </Slider>
                 </div>
-      
+
 
                 <h3 className="text-lg font-bold mt-6">«{location.joylashuv}»</h3>
                 <p className="text-sm text-gray-700">Tuman: {location.tuman}</p>
@@ -489,7 +499,8 @@ const MapComponent = () => {
                       <li key={idx} className="text-sm text-gray-600">{phone}</li>
                     ))}
                   </ul>
-                <button className='text-lg text-white mt-2 bg-green-500 shadow-lg hover:bg-green-600 px-6 py-1 rounded-md flex items-center justify-center' onClick={() => { setSelectedLocation(location); setDrawerOpen(true); }}>Details</button>
+                  <button className='text-lg text-white mt-2 bg-green-500 shadow-lg hover:bg-green-600 px-6 py-1 rounded-md flex items-center justify-center' onClick={() => { setSelectedLocation(location); setDrawerOpen(true); }}>Details</button>
+
                 </div>
               </li>
             ))}
@@ -507,7 +518,7 @@ const MapComponent = () => {
         >
           <button
             onClick={() => setDrawerOpen(false)}
-            className="mb-4 text-black text-xl hover:underline self-end"
+            className="mb-4 text-black text-2xl  self-end"
           >
             &times;
           </button>
@@ -539,8 +550,8 @@ const MapComponent = () => {
                   <li key={idx} className="text-sm text-gray-600">{phone}</li>
                 ))}
               </ul>
-         
-             
+
+
             </div>
           </div>
         </div>
